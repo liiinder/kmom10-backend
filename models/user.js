@@ -7,11 +7,10 @@ var userSchema = new Schema({
     name: String,
     birth: String,
     balance: String,
-    transactions: [{
-        company: String,
-        date: Date,
+    stocks: [{
+        company: {type: String, unique: true},
         amount: Number,
-        price: Number
+        paid: Number
     }]
 });
 

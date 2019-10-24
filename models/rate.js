@@ -23,7 +23,7 @@ var stock = {
     randomAroundOne: function () {
         // Return a value between 0.99505 and 0.01 more (1.00505)
         // added the extra 0.00005 for it to be a bit weighted towards gaining value.
-        const lowest = 0.99501;
+        const lowest = 0.995;
         return Math.random() / 100 + lowest;
     },
 

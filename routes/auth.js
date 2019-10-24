@@ -15,6 +15,10 @@ router.post("/update",
     (req, res, next) => checkToken(req, res, next),
     (req, res) => updateUser(res, req.body));
 
+router.post("/stock",
+    (req, res, next) => checkToken(req, res, next),
+    (req, res) => stock(res, req.body));
+
 function checkToken(req, res, next) {
     const token = req.headers['x-access-token'];
     const jwt = require('jsonwebtoken');
@@ -25,6 +29,7 @@ function checkToken(req, res, next) {
     jwt.verify(token, process.env.JWT_SECRET, function (err) {
         if (err) {
             data.msg = "Invalid Token";
+            console.log("error");
             res.status(401).json(data);
         } else {
             next();
@@ -32,14 +37,42 @@ function checkToken(req, res, next) {
     });
 }
 
+async function stock(res, req) {
+    console.log(req);
+    const user = await User.findOne({ email: req.email });
+    if (user.balance < req.price) {
+        res.status(400).json({ msg: "Inte tillräckligt med pengar" });
+    } else {
+        user.balance -= req.amount * req.price;
+        let check = true;
+        user.stocks.forEach((stock) => {
+            if (stock.company == req.company) {
+                if (req.amount > 0){
+                    stock.paid += (req.amount * req.price);
+                } else {
+                    stock.paid = (stock.paid / stock.amount) * (stock.amount + req.amount);
+                }
+                stock.amount += req.amount;
+                check = false;
+            }
+        });
+        if (check) {
+            user.stocks.push({
+                company: req.company,
+                amount: req.amount,
+                paid: req.amount * req.price
+            });
+        }
+        user.save();
+        let transaction = (req.amount > 0) ? "Köp" : "Sälj";
+
+        res.status(200).json({ user: user, msg: `${transaction} genomfört av ${req.company}`});
+    }
+}
+
 async function updateUser(res, req) {
     deposit = (req.deposit == "") ? "0" : req.deposit;
-    console.log(req.deposit);
-    console.log(deposit);
-    console.log("balance");
-    console.log(req.user.balance);
-    console.log(+req.user.balance + +deposit);
-    console.log("tresasdlajksdlöasdk");
+
     await User.update({ email: req.user.email },
         { $set: {
             name: req.name,
@@ -70,7 +103,7 @@ function formatedDate() {
     let formated = d.getFullYear() +
         ('0' + (d.getMonth() + 1)).slice(-2) +
         ('0' + d.getDate()).slice(-2);
-    console.log(formated);
+    // console.log(formated);
     return formated
 }
 
