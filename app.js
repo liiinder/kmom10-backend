@@ -9,8 +9,6 @@ mongoose.connect('mongodb://localhost:27017/project');
 
 const cors = require('cors');
 app.use(cors());
-// app.options('*', cors());
-// app.use(cors({ credentials: true, origin: 'http://localhost:8080' }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }))

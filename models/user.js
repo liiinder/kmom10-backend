@@ -8,7 +8,7 @@ var userSchema = new Schema({
     birth: String,
     balance: String,
     stocks: [{
-        company: {type: String, unique: true},
+        company: String,
         amount: Number,
         paid: Number
     }]

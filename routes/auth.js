@@ -29,6 +29,7 @@ function checkToken(req, res, next) {
     jwt.verify(token, process.env.JWT_SECRET, function (err) {
         if (err) {
             data.msg = "Invalid Token";
+            console.log(token);
             console.log("error");
             res.status(401).json(data);
         } else {
@@ -43,10 +44,15 @@ async function stock(res, req) {
     if (user.balance < req.price) {
         res.status(400).json({ msg: "Inte tillräckligt med pengar" });
     } else {
-        user.balance -= req.amount * req.price;
         let check = true;
         user.stocks.forEach((stock) => {
             if (stock.company == req.company) {
+                if (stock.amount == 0 && req.amount < 0) {
+                    res.status(400).json({ msg: "Finns inga aktier att sälja" });
+                } 
+                user.balance -= req.amount * req.price;
+                console.log("req.amount");
+                console.log(req.amount);
                 if (req.amount > 0){
                     stock.paid += (req.amount * req.price);
                 } else {
@@ -120,6 +126,7 @@ router.post('/register', function (req, res) {
             newuser.name = "";
             newuser.birth = formatedDate();
             newuser.balance = "0";
+            newuser.stocks = [];
             newuser.save(function (err, savedUser) {
                 if (err) {
                     console.log(err);

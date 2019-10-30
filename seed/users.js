@@ -22,6 +22,11 @@ var users = [
             paid: 102
         },
         {
+            company: "DynamicDiscs",
+            amount: 3,
+            paid: 61
+        },
+        {
             company: "Discraft",
             amount: 2,
             paid: 24
