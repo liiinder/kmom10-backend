@@ -9,7 +9,7 @@ var users = [
         email: "linderkristoffer@hotmail.com",
         password: "$2a$10$26ydNeRZzg3feCAOkYsyA.iLU3P.SEVyqHLA7nWA3HAS4trwzLpCW",
         name: "Kristoffer",
-        birth: "19980428",
+        birth: "19870428",
         balance: 500,
         stocks: [{
             company: "Discmania",

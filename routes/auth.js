@@ -41,7 +41,7 @@ function checkToken(req, res, next) {
 async function stock(res, req) {
     console.log(req);
     const user = await User.findOne({ email: req.email });
-    if (user.balance < req.price) {
+    if (( user.balance < req.price ) && ( req.amount > 0 )) {
         res.status(400).json({ msg: "Inte tillräckligt med pengar" });
     } else {
         let check = true;
@@ -68,6 +68,7 @@ async function stock(res, req) {
                 amount: req.amount,
                 paid: req.amount * req.price
             });
+            user.balance -= req.amount * req.price;
         }
         user.save();
         let transaction = (req.amount > 0) ? "Köp" : "Sälj";
